@@ -10,7 +10,7 @@ int main()
 	// What is the player's score?
 	int playerScore;
 
-	// What is the player’s first initial
+	// What is the playerï¿½s first initial
 	char playerInitial;
 
 	// What is the value of pi
