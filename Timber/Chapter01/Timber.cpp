@@ -14,16 +14,29 @@ int main() {
 	sf::VideoMode video_mode{1920, 1080};
 	sf::RenderWindow window{video_mode, "Timber!!!"};
 
+	sf::Texture background_texture{}; 
+	// load the texure into the video memory
+	background_texture.loadFromFile("graphics/background.png"); 
+
+	sf::Sprite background_sprite{background_texture};
+	background_sprite.setPosition(0, 0);
+
 	while (window.isOpen()) {
 		// Input
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 			window.close();
 		}
+
 		// Update
 
 		// Draw
 		window.clear();
-		window.display(); // Double-buffering
+
+		// 这里的GPU流水线应该还有更多的信息, 但是先抓住重点
+		// put the texture to some display buffer (e.g. framebuffer)
+		window.draw(background_sprite); 
+
+		window.display(); // Double-buffering switching/flipping
 	}
 	return 0;
 }
