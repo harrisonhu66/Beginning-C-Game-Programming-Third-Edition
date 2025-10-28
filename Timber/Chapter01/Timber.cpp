@@ -13,6 +13,18 @@
 int main() {
 	sf::VideoMode video_mode{1920, 1080};
 	sf::RenderWindow window{video_mode, "Timber!!!"};
+
+	while (window.isOpen()) {
+		// Input
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+			window.close();
+		}
+		// Update
+
+		// Draw
+		window.clear();
+		window.display(); // Double-buffering
+	}
 	return 0;
 }
 
