@@ -1,4 +1,5 @@
 add_executable(TimerChapter01)
+# 这一行不知道为啥没用, 每次都要手动设置startup很烦呐
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT TimerChapter01)
 
 target_sources(TimerChapter01
