@@ -167,6 +167,9 @@ int main() {
 	sf::Sound oot{};
 	oot.setBuffer( oot_buffer );
 
+	float score_update_timer = 0;
+	float score_update_duration = 0.1; // Normally, human relection is 100ms max
+
 	while (window.isOpen()) {
 		//
 		// Input
@@ -350,11 +353,15 @@ int main() {
 				}
 			}
 
-			// Update the score text
-			std::stringstream ss{};
-			ss << "Score = " << score;
-			//std::format("Score = {}", score); 用于字符的拼接方便多了, stream系列的API设计挺差的
-			score_text.setString(ss.str());
+			score_update_timer += dt.asSeconds();
+			if (score_update_timer >= score_update_duration) {
+				// Update the score text
+				std::stringstream ss{};
+				ss << "Score = " << score;
+				//std::format("Score = {}", score); 用于字符的拼接方便多了, stream系列的API设计挺差的
+				score_text.setString(ss.str());
+				score_update_timer = 0;
+			}
 
 			for (int i{0}, e{static_cast<int>(branches.size())}; i < e; ++i) {
 				float height{i * 150.0f};
