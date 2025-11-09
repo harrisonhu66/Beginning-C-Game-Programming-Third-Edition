@@ -121,9 +121,16 @@ int main() {
 	message_text.setOrigin(message_rect.left + message_rect.width / 2.0f, message_rect.top + message_rect.height / 2.0f);
 	std::cout << std::format("{}, {}", message_text.getOrigin().x, message_text.getOrigin().y);
 	message_text.setPosition(1920 / 2.0f, 1080 / 2.0f);
+
+	sf::RectangleShape score_text_background{{600, 105}}, fps_text_background{{1000, 105}};
+	score_text_background.setFillColor({0, 0, 0, 150});
+	score_text_background.setPosition(0, 30);
+	fps_text_background.setFillColor({0, 0, 0, 150});
+	fps_text_background.setPosition(1150, 30);
 	// postion score at the top left with a little bit padding
 	score_text.setPosition(20, 20);
 	fps_text.setPosition(1200, 20);
+
 
 	sf::Texture branch_texture{};
 	branch_texture.loadFromFile("graphics/branch.png");
@@ -470,6 +477,8 @@ int main() {
 		window.draw(bee_sprite);
 
 		// HUD-specific
+		window.draw(score_text_background);
+		window.draw(fps_text_background);
 		window.draw(score_text);
 		window.draw(fps_text);
 		window.draw(time_bar);
