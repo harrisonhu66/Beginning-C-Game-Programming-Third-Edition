@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 // Abstract 2D graphics like sprites, texts, shapes, ...
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -92,8 +93,10 @@ int main() {
 
 	sf::Text message_text{"Press Enter to start!", font, 75};
 	sf::Text score_text{"Score = 0", font, 100};
+	sf::Text fps_text{"FPS = 0", font, 100};
 	message_text.setFillColor(sf::Color::White);
 	score_text.setFillColor(sf::Color::White);
+	fps_text.setFillColor(sf::Color::White);
 	const auto message_rect = message_text.getLocalBounds();
 	std::cout << std::format("left={}, top={}, width={}, height={}\n", message_rect.left, message_rect.top, message_rect.width, message_rect.height);
 	// The entity's position is the position of its origin, 所有变换都是以origin为中心的
@@ -109,6 +112,7 @@ int main() {
 	message_text.setPosition(1920 / 2.0f, 1080 / 2.0f);
 	// postion score at the top left with a little bit padding
 	score_text.setPosition(20, 20);
+	fps_text.setPosition(1200, 20);
 
 	sf::Texture branch_texture{};
 	branch_texture.loadFromFile("graphics/branch.png");
@@ -355,12 +359,15 @@ int main() {
 
 			score_update_timer += dt.asSeconds();
 			if (score_update_timer >= score_update_duration) {
+				score_update_timer = 0;
 				// Update the score text
 				std::stringstream ss{};
 				ss << "Score = " << score;
 				//std::format("Score = {}", score); 用于字符的拼接方便多了, stream系列的API设计挺差的
 				score_text.setString(ss.str());
-				score_update_timer = 0;
+
+				auto fps_text_content = std::format("FPS = {}" /* no fraction part */, std::round(1 / dt.asSeconds()));
+				fps_text.setString(fps_text_content);
 			}
 
 			for (int i{0}, e{static_cast<int>(branches.size())}; i < e; ++i) {
@@ -450,6 +457,7 @@ int main() {
 
 		// HUD-specific
 		window.draw(score_text);
+		window.draw(fps_text);
 		window.draw(time_bar);
 		if (paused) {
 			window.draw(message_text);
