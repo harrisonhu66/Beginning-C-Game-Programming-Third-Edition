@@ -13,6 +13,7 @@ target_link_libraries(TimerChapter01
         sfml-graphics
         sfml-system
         sfml-window
+        sfml-audio
 )
 
 if(WIN32)
@@ -40,6 +41,7 @@ if(WIN32)
             $<TARGET_FILE:sfml-graphics>
             $<TARGET_FILE:sfml-window>
             $<TARGET_FILE:sfml-system>
+            $<TARGET_FILE:sfml-audio>
             $<TARGET_FILE_DIR:TimerChapter01>
     )
 endif()
