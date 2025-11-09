@@ -64,6 +64,17 @@ int main() {
 	tree_texture.loadFromFile("graphics/tree.png");
 	sf::Sprite tree_sprite{tree_texture};
 	tree_sprite.setPosition(810, 0); // 1920/2=810, fuck 当时没有计算验证一下 -> 1920/2 = 960, so 960 - 810 = 150 = tree image width / 2
+	
+	std::array<sf::Sprite, 2> decoration_trees{};
+	for (auto i = decoration_trees.begin(), e = decoration_trees.end(); i != e; ++i) {
+		i->setTexture(tree_texture);
+	}
+	decoration_trees[0].setPosition(50, 0);
+	// near the camera
+	decoration_trees[0].setScale({0.8, 1.1});
+	decoration_trees[1].setPosition(1500, -30);
+	// further the camera
+	decoration_trees[1].setScale({.7, 1});
 
 	sf::Texture bee_texture{};
 	bee_texture.loadFromFile("graphics/bee.png");
@@ -447,6 +458,9 @@ int main() {
 			window.draw(*i);
 		}
 		window.draw(tree_sprite);
+		for (const auto& decoration_tree : decoration_trees) {
+			window.draw(decoration_tree);
+		}
 
 		window.draw(player_sprite);
 		window.draw(axe_sprite);
