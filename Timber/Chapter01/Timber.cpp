@@ -26,7 +26,6 @@ enum class Side {
 };
 std::array<Side, num_branches> branch_positions{};
 
-
 // This is where our game starts from int main()
 // OS calls main() and receive a value indicating this program success or not.
 int main() {
@@ -86,18 +85,26 @@ int main() {
 
 	sf::Texture cloud_texture{};
 	cloud_texture.loadFromFile("graphics/cloud.png");
-	sf::Sprite cloud_sprite1{cloud_texture};
-	sf::Sprite cloud_sprite2{cloud_texture};
-	sf::Sprite cloud_sprite3{cloud_texture};
-	cloud_sprite1.setPosition(0, 0);
-	cloud_sprite2.setPosition(0, 250);
-	cloud_sprite3.setPosition(0, 500);
-	bool cloud_active1{false};
-	bool cloud_active2{false};
-	bool cloud_active3{false};
-	float cloud_speed1{0.0f};
-	float cloud_speed2{0.0f};
-	float cloud_speed3{0.0f};
+	constexpr int num_clouds = 3;
+	std::array<sf::Sprite, num_clouds> clouds{};
+	for (int i{0}; i < clouds.size(); ++i) {
+		clouds[i].setTexture(cloud_texture);
+		clouds[i].setPosition(0, i * 250);
+	}
+	std::array<bool, num_clouds> cloud_actives{};
+	std::array<float, num_clouds> cloud_speeds{};
+	//sf::Sprite cloud_sprite1{cloud_texture};
+	//sf::Sprite cloud_sprite2{cloud_texture};
+	//sf::Sprite cloud_sprite3{cloud_texture};
+	//cloud_sprite1.setPosition(0, 0);
+	//cloud_sprite2.setPosition(0, 250);
+	//cloud_sprite3.setPosition(0, 500);
+	//bool cloud_active1{false};
+	//bool cloud_active2{false};
+	//bool cloud_active3{false};
+	//float cloud_speed1{0.0f};
+	//float cloud_speed2{0.0f};
+	//float cloud_speed3{0.0f};
 
 	sf::Font font{};
 	font.loadFromFile("fonts/KOMIKAP_.ttf");
@@ -328,52 +335,69 @@ int main() {
 				}
 			}
 
-			// Clouds moving left to right
-			if (!cloud_active1) {
-				cloud_speed1 = rand() % 200 + 10; // 如果是0, 云就不会respawn
-				float height = rand() % 150;
-				cloud_sprite1.setPosition(-200, height);
-				cloud_active1 = true;
-			}
-			else {
-				float distance = dt.asSeconds() * cloud_speed1;
-				cloud_sprite1.setPosition(cloud_sprite1.getPosition().x + distance, cloud_sprite1.getPosition().y);
+			for (int i{0}, n{static_cast<int>(clouds.size())}; i < n; ++i) {
+				if (!cloud_actives[i]) {
+					cloud_speeds[i] = rand() % 200 + 10;
+					float height = rand() % 150;
+					clouds[i].setPosition(-200, height);
+					cloud_actives[i] = true;
+				}
+				else {
+					float distance = dt.asSeconds() * cloud_speeds[i];
+					auto pos = clouds[i].getPosition();
+					clouds[i].setPosition(pos.x + distance, pos.y);
 
-				// 这里还有一个问题, 1920 is a magic number
-				if (cloud_sprite1.getPosition().x > 1920) { // top-left corner is the origin
-					cloud_active1 = false;
+					if (pos.x > 1920) {
+						cloud_actives[i] = false;
+					}
 				}
 			}
+			//// Clouds moving left to right
+			//if (!cloud_active1) {
+			//	cloud_speed1 = rand() % 200 + 10; // 如果是0, 云就不会respawn
+			//	float height = rand() % 150;
+			//	cloud_sprite1.setPosition(-200, height);
+			//	cloud_active1 = true;
+			//}
+			//else {
+			//	float distance = dt.asSeconds() * cloud_speed1;
+			//	cloud_sprite1.setPosition(cloud_sprite1.getPosition().x + distance, cloud_sprite1.getPosition().y);
 
-			if (!cloud_active2) {
-				cloud_speed2 = rand() % 200 + 20;
-				float height = rand() % 300 - 150; // negative bound, weird
-				cloud_sprite2.setPosition(-200, height);
-				cloud_active2 = true;
-			}
-			else {
-				float distance = dt.asSeconds() * cloud_speed2;
-				cloud_sprite2.setPosition(cloud_sprite2.getPosition().x + distance, cloud_sprite2.getPosition().y);
+			//	// 这里还有一个问题, 1920 is a magic number
+			//	if (cloud_sprite1.getPosition().x > 1920) { // top-left corner is the origin
+			//		cloud_active1 = false;
+			//	}
+			//}
 
-				if (cloud_sprite2.getPosition().x > 1920) {
-					cloud_active2 = false;
-				}
-			}
+			//if (!cloud_active2) {
+			//	cloud_speed2 = rand() % 200 + 20;
+			//	float height = rand() % 300 - 150; // negative bound, weird
+			//	cloud_sprite2.setPosition(-200, height);
+			//	cloud_active2 = true;
+			//}
+			//else {
+			//	float distance = dt.asSeconds() * cloud_speed2;
+			//	cloud_sprite2.setPosition(cloud_sprite2.getPosition().x + distance, cloud_sprite2.getPosition().y);
 
-			if (!cloud_active3) {
-				cloud_speed3 = rand() % 200 + 30;
-				float height = rand() % 450 - 150;
-				cloud_sprite3.setPosition(-200, height);
-				cloud_active3 = true;
-			}
-			else {
-				float distance = dt.asSeconds() * cloud_speed3;
-				cloud_sprite3.setPosition(cloud_sprite3.getPosition().x + distance, cloud_sprite3.getPosition().y);
+			//	if (cloud_sprite2.getPosition().x > 1920) {
+			//		cloud_active2 = false;
+			//	}
+			//}
 
-				if (cloud_sprite3.getPosition().y > 1920) {
-					cloud_active3 = false;
-				}
-			}
+			//if (!cloud_active3) {
+			//	cloud_speed3 = rand() % 200 + 30;
+			//	float height = rand() % 450 - 150;
+			//	cloud_sprite3.setPosition(-200, height);
+			//	cloud_active3 = true;
+			//}
+			//else {
+			//	float distance = dt.asSeconds() * cloud_speed3;
+			//	cloud_sprite3.setPosition(cloud_sprite3.getPosition().x + distance, cloud_sprite3.getPosition().y);
+
+			//	if (cloud_sprite3.getPosition().y > 1920) {
+			//		cloud_active3 = false;
+			//	}
+			//}
 
 			score_update_timer += dt.asSeconds();
 			if (score_update_timer >= score_update_duration) {
@@ -458,9 +482,12 @@ int main() {
 		// 这里的GPU流水线应该还有更多的信息, 但是先抓住重点
 		// put the texture to some display buffer (e.g. framebuffer)
 		window.draw(background_sprite); 
-		window.draw(cloud_sprite1);
-		window.draw(cloud_sprite2);
-		window.draw(cloud_sprite3);
+		for (const auto& cloud : clouds) {
+			window.draw(cloud);
+		}
+		//window.draw(cloud_sprite1);
+		//window.draw(cloud_sprite2);
+		//window.draw(cloud_sprite3);
 		for (auto i = branches.begin(), e = branches.end(); i != e; ++i) {
 			window.draw(*i);
 		}
