@@ -15,3 +15,4 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 add_subdirectory(Timber)
+add_subdirectory(Pong)

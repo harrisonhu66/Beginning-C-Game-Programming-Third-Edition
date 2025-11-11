@@ -283,7 +283,6 @@ int main()
 		while (window.pollEvent(event))
 		{
 			
-
 			if (event.type == Event::KeyReleased && !paused)
 			{
 				// Listen for key presses again

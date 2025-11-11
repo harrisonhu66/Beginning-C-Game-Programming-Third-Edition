@@ -1,4 +1,4 @@
-#include "Bat.h"
+﻿#include "Bat.h"
 #include <sstream>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
@@ -8,7 +8,7 @@ int main()
     // Create a video mode object
     VideoMode vm(1920, 1080);
     // Create and open a window for the game
-    RenderWindow window(vm, "Pong", Style::Fullscreen);
+    RenderWindow window(vm, "Pong"/*, Style::Fullscreen*/);
     int score = 0;
     int lives = 3;
 
