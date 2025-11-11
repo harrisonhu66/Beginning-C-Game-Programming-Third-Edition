@@ -35,9 +35,17 @@ int main()
     
     Bat bat{1920 / 2, 1080 - 20};
 
+    int score{0}, lives{3};
+    sf::Font font{};
+    font.loadFromFile("fonts/DS-DIGIT.TTF");
+    sf::Text hud{};
+    hud.setFont(font);
+    hud.setCharacterSize(45);
+    hud.setFillColor(sf::Color::White);
+    hud.setPosition(20, 20);
+
     sf::Clock clock{};
-    while (window.isOpen())
-    {
+    while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
@@ -51,21 +59,23 @@ int main()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             bat.wanted_to_move_left = true;
-        }
-        else {
+        } else {
             bat.wanted_to_move_left = false;
         }
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             bat.wanted_to_move_right = true;
-        }
-        else {
+        } else {
             bat.wanted_to_move_right = false;
         }
 
         sf::Time dt = clock.restart();
         bat.update(dt);
+        auto content = std::format("Score = {}, lives = {}", score, lives);
+        hud.setString(content);
 
         window.clear();
+        window.draw(hud);
         window.draw(bat.get_shape());
         window.display();
     }
