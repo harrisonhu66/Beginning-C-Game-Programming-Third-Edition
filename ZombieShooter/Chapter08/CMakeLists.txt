@@ -1,17 +1,15 @@
-set(exe Pong)
+set(exe ZombieShooter08)
 add_executable(${exe})
 
 target_sources(${exe}
     PRIVATE
-        main.cpp
-        # Ball.cpp
-        # Bat.cpp
+        ZombieArena.cpp
+        Player.cpp
 
     PRIVATE # Make headers visible to IDE
         FILE_SET HEADERS
         FILES
-            # Bat.h
-            # Ball.h
+            Player.h
 )
 
 target_compile_features(${exe} PRIVATE cxx_std_23)
@@ -42,7 +40,7 @@ if(WIN32)
     )
 endif()
 
-set(RESOURCE_TYPES fonts)
+set(RESOURCE_TYPES fonts graphics sound)
 
 foreach(RES_TYPE IN LISTS RESOURCE_TYPES)
     set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${RES_TYPE}")

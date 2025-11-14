@@ -1,20 +1,27 @@
-set(exe Pong)
+
+set(exe ZombieSurvivors)
 add_executable(${exe})
+
+file(GLOB sources CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
+
+file(GLOB headers CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
+)
 
 target_sources(${exe}
     PRIVATE
-        main.cpp
-        # Ball.cpp
-        # Bat.cpp
+        ${sources}
 
     PRIVATE # Make headers visible to IDE
         FILE_SET HEADERS
         FILES
-            # Bat.h
-            # Ball.h
+            ${headers}
 )
 
 target_compile_features(${exe} PRIVATE cxx_std_23)
+
 target_link_libraries(${exe} 
     PRIVATE 
         sfml-graphics
@@ -31,7 +38,9 @@ if(WIN32)
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:${exe}>
         VERBATIM
     )
-    add_custom_command(TARGET ${exe} POST_BUILD
+    add_custom_command(TARGET ${exe} 
+        COMMENT "COPY DLLs"
+        POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:sfml-graphics>
             $<TARGET_FILE:sfml-window>
@@ -42,7 +51,7 @@ if(WIN32)
     )
 endif()
 
-set(RESOURCE_TYPES fonts)
+set(RESOURCE_TYPES fonts gamedata graphics sound)
 
 foreach(RES_TYPE IN LISTS RESOURCE_TYPES)
     set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${RES_TYPE}")
