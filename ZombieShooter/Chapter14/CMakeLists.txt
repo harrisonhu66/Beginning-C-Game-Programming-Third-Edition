@@ -1,17 +1,38 @@
-set(exe Pong)
+set(exe ZombieShooterReference)
 add_executable(${exe})
+
+file(GLOB sources CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+)
+
+# message(STATUS "sources found: ${sources}")
+
+file(GLOB headers CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+)
 
 target_sources(${exe}
     PRIVATE
-        main.cpp
-        # Ball.cpp
-        # Bat.cpp
+        ${sources} # md visual studio看不到文件
+        # Bullet.cpp
+        # CreateBackground.cpp
+        # CreateHorde.cpp
+        # Pickup.cpp
+        # Player.cpp
+        # TextureHolder.cpp
+        # Zombie.cpp
+        # ZombieArena6.cpp
 
     PRIVATE # Make headers visible to IDE
         FILE_SET HEADERS
         FILES
-            # Bat.h
-            # Ball.h
+            ${headers}
+            # Bullet.h
+            # Pickup.h
+            # Player.h
+            # TextureHolder.h
+            # Zombie.h
+            # ZombieArena.h
 )
 
 target_compile_features(${exe} PRIVATE cxx_std_23)
@@ -42,7 +63,7 @@ if(WIN32)
     )
 endif()
 
-set(RESOURCE_TYPES fonts)
+set(RESOURCE_TYPES fonts graphics sound gamedata)
 
 foreach(RES_TYPE IN LISTS RESOURCE_TYPES)
     set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${RES_TYPE}")

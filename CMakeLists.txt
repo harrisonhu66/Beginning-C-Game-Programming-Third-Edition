@@ -16,3 +16,5 @@ FetchContent_MakeAvailable(SFML)
 
 add_subdirectory(Timber)
 add_subdirectory(Pong)
+add_subdirectory(ZombieShooter)
+add_subdirectory(ZombieSurvivors)
