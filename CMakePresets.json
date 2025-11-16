@@ -6,7 +6,7 @@
       "binaryDir": "${sourceDir}/build",
       "architecture": "Win32",
       "cacheVariables": {
-        "CMAKE_CXX_STANDARD": "20"
+        "CMAKE_CXX_STANDARD": "23"
       }
     }
   ]

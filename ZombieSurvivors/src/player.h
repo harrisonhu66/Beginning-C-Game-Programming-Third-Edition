@@ -13,16 +13,18 @@ struct MoveIntent {
 };
 
 class Player {
-	sf::Vector2f position_ = sf::Vector2f(0.0f, 0.0f);
-	float speed_ = 200.0f;
-	sf::Sprite sprite_ = sf::Sprite(rr::TextureMap::get()["graphics/player.png"]);
 public:
+	sf::Vector2f position = sf::Vector2f(0.0f, 0.0f);
 	MoveIntent move_intent;
+private:
+	float speed_ = 200.0f;
+	sf::Sprite sprite_ = sf::Sprite(TextureMap::singleton()["graphics/player.png"]);
+
 public:
 	Player();
-	void spawn(float x, float y);
-	void spawn(sf::Vector2f pos) { spawn(pos.x, pos.y); }
-	void update(const sf::Time& dt);
+	void update();
 	sf::Sprite get_visual() const { return sprite_; }
+private:
+	void handle_movement();
 };
 } // End namespace rr

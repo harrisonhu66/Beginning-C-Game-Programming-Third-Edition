@@ -1,34 +1,53 @@
 ﻿#include "game.h"
+#include "rng.h"
 #include <print>
 
 namespace rr {
 
 Game::Game(const std::string& title) {
-    auto mode = sf::VideoMode(1920, 1080);
-	window_center_ = sf::Vector2f(mode.width / 2.0f, mode.height / 2.0f);
-    window_ = new sf::RenderWindow(mode, title);
+    video_mode_ = sf::VideoMode(1920, 1080);
+	window_center_ = sf::Vector2f(video_mode_.width / 2.0f, video_mode_.height / 2.0f);
+    window_ = new sf::RenderWindow(video_mode_, title);
 
-    //player_ = new Player();
+    player_ = new Player();
+	zombie_ = new Zombie(Zombie::Type::chaser);
+	for (int i = 0; i < 100; i++) {
+		auto zombie_type = static_cast<Zombie::Type>(Rng::singleton().range(Zombie::num_types));
+		auto zombie = new Zombie(static_cast<Zombie::Type>(zombie_type));
+		float padding = 40;
+		auto x = static_cast<int>(Rng::singleton().range(padding, video_mode_.width - padding));
+		auto y = static_cast<int>(Rng::singleton().range(padding, video_mode_.height - padding));
+		zombie->set_position(x, y);
+		zombie->set_chase_target(player_);
+		zombies_.push_back(zombie);
+	}
 }
 
 Game::~Game() {
+	for (auto zombie : zombies_) {
+		delete zombie;
+	}
+	delete zombie_;
+	delete player_;
     delete window_;
 }
 
 void Game::run() {
     setup();
 	sf::Clock clock;
-    while (is_running_) {
+    while (running_) {
         handle_input();
-		auto dt = clock.restart();
-        update(dt);
+		Game::delta_time = clock.restart();
+        update();
         render();
     }
 }
 
 void Game::setup() {
 	std::println("{}, {}", window_center_.x, window_center_.y);
-    player_.spawn(window_center_);
+	player_->position = window_center_;
+	zombie_->set_position(player_->position.x - 200, player_->position.y - 300.0f);
+	zombie_->set_chase_target(player_);
 }
 
 void Game::handle_input() {
@@ -36,26 +55,35 @@ void Game::handle_input() {
 	while (window_->pollEvent(event)) {
 		switch (event.type) {
 		case sf::Event::Closed:
-			is_running_ = false;
+			running_ = false;
 			window_->close();
 			break;
 		}
 	}
 
-	player_.move_intent.right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-	player_.move_intent.left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-	player_.move_intent.up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
-	player_.move_intent.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+	player_->move_intent.right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+	player_->move_intent.left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+	player_->move_intent.up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+	player_->move_intent.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
 }
 
-void Game::update(sf::Time dt) {
-	player_.update(dt);
+void Game::update() {
+	// 每次都添加update, draw很烦呐
+	player_->update();
+	zombie_->update();
+	for (auto zombie : zombies_) {
+		zombie->update();
+	}
 }
 
 void Game::render() {
 	window_->clear();
 
-	window_->draw(player_.get_visual());
+	window_->draw(player_->get_visual());
+	window_->draw(zombie_->get_visual());
+	for (auto zombie : zombies_) {
+		window_->draw(zombie->get_visual());
+	}
 
 	window_->display();
 }

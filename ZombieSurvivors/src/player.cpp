@@ -1,33 +1,35 @@
 ﻿#include "player.h"
+#include "game.h"
 #include <cmath>
 namespace rr {
 Player::Player() {
 	// center the origin
 	sprite_.setOrigin(25, 25);
 }
-void Player::spawn(float x, float y) {
-	position_ = sf::Vector2f(x, y);
+
+void Player::update() {
+	handle_movement();
 }
 
-void Player::update(const sf::Time& dt) {
+void Player::handle_movement() {
 	auto dir = sf::Vector2f(0, 0);
-	if (this->move_intent.right) {
+	if (move_intent.right) {
 		dir.x += 1;
 	}
-	if (this->move_intent.left) {
+	if (move_intent.left) {
 		dir.x -= 1;
 	}
-	if (this->move_intent.down) {
+	if (move_intent.down) {
 		dir.y += 1;
 	}
-	if (this->move_intent.up) {
+	if (move_intent.up) {
 		dir.y -= 1;
 	}
 	if (dir != sf::Vector2f(0, 0)) {
 		dir = dir / std::sqrt(dir.x * dir.x + dir.y * dir.y);
 	}
-	position_ += dt.asSeconds() * speed_ * dir;
-	sprite_.setPosition(position_);
+	position += Game::delta_time.asSeconds() * speed_ * dir;
+	sprite_.setPosition(position);
 }
 
 } // End namespace rr

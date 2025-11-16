@@ -8,9 +8,9 @@ class TextureMap {
 	std::map<std::string, sf::Texture> textures_;
 public:
 	// delete all ctor, operator=
-	static TextureMap& get() {
-		static TextureMap singleton;
-		return singleton;
+	static TextureMap& singleton() {
+		static TextureMap tm;
+		return tm;
 	}
 	sf::Texture& operator[](const std::string& filename);
 };
