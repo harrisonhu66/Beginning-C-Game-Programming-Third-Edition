@@ -22,9 +22,10 @@ private:
 
 public:
 	Player();
-	void update();
+	void update(const sf::Vector2f& mouse_position);
 	sf::Sprite get_visual() const { return sprite_; }
 private:
 	void handle_movement();
+	void handle_rotation(const sf::Vector2f& mouse_position);
 };
 } // End namespace rr

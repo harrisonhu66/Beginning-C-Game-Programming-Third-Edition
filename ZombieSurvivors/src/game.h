@@ -18,6 +18,7 @@ private:
 	Player* player_;
 	Zombie* zombie_;
 	std::vector<Zombie*> zombies_;
+	sf::Vector2f mouse_position_;
 public:
 	/**
 	 * @brief Time between frames

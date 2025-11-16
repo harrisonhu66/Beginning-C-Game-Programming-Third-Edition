@@ -39,6 +39,11 @@ void Zombie::chase_target() {
 	}
 	position_ += Game::delta_time.asSeconds() * speed_ * dir;
 	sprite_.setPosition(position_);
+
+	float dy = player_->position.y - position_.y;
+	float dx = player_->position.x - position_.x;
+	float degree = 180 / std::acos(-1.0f) * std::atan2(dy, dx);
+	sprite_.setRotation(degree);
 }
 
 

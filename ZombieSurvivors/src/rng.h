@@ -14,12 +14,12 @@ public:
 	/**
 	 * @brief [start, end)
 	 */
-	int range(int start, int end) const {
+	int pick(int start, int end) const {
 		return rand() % (end - start) + start;
 	}
 
-	int range(int end) const {
-		return range(0, end);
+	int pick(int end) const {
+		return pick(0, end);
 	}
 private:
 	Rng() {

@@ -11,12 +11,13 @@ Game::Game(const std::string& title) {
 
     player_ = new Player();
 	zombie_ = new Zombie(Zombie::Type::chaser);
-	for (int i = 0; i < 100; i++) {
-		auto zombie_type = static_cast<Zombie::Type>(Rng::singleton().range(Zombie::num_types));
+	constexpr int num_zombies = 500;
+	for (int i = 0; i < num_zombies; i++) {
+		auto zombie_type = static_cast<Zombie::Type>(Rng::singleton().pick(Zombie::num_types));
 		auto zombie = new Zombie(static_cast<Zombie::Type>(zombie_type));
 		float padding = 40;
-		auto x = static_cast<int>(Rng::singleton().range(padding, video_mode_.width - padding));
-		auto y = static_cast<int>(Rng::singleton().range(padding, video_mode_.height - padding));
+		auto x = static_cast<int>(Rng::singleton().pick(padding, video_mode_.width - padding));
+		auto y = static_cast<int>(Rng::singleton().pick(padding, video_mode_.height - padding));
 		zombie->set_position(x, y);
 		zombie->set_chase_target(player_);
 		zombies_.push_back(zombie);
@@ -65,11 +66,14 @@ void Game::handle_input() {
 	player_->move_intent.left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
 	player_->move_intent.up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 	player_->move_intent.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+
+	auto mouse_pixels = sf::Mouse::getPosition(*window_);
+	mouse_position_ = window_->mapPixelToCoords(mouse_pixels);
 }
 
 void Game::update() {
 	// 每次都添加update, draw很烦呐
-	player_->update();
+	player_->update(mouse_position_);
 	zombie_->update();
 	for (auto zombie : zombies_) {
 		zombie->update();
