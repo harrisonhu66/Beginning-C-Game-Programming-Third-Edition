@@ -9,6 +9,7 @@ Game::Game(const std::string& title) {
 	window_center_ = sf::Vector2f(video_mode_.width / 2.0f, video_mode_.height / 2.0f);
     window_ = new sf::RenderWindow(video_mode_, title);
 
+	arena_ = new Arena(sf::IntRect(0, 0, video_mode_.width, video_mode_.height), 50);
     player_ = new Player();
 	zombie_ = new Zombie(Zombie::Type::chaser);
 	constexpr int num_zombies = 500;
@@ -25,6 +26,7 @@ Game::Game(const std::string& title) {
 }
 
 Game::~Game() {
+	delete arena_;
 	for (auto zombie : zombies_) {
 		delete zombie;
 	}
@@ -33,11 +35,11 @@ Game::~Game() {
     delete window_;
 }
 
-void Game::run() {
+void Game::loop() {
     prepare();
 	sf::Clock clock;
-    while (running_) {
-        handle_input();
+    while (is_running_) {
+        process_inputs();
 		Game::delta_time = clock.restart();
         update();
         render();
@@ -51,12 +53,12 @@ void Game::prepare() {
 	zombie_->set_chase_target(player_);
 }
 
-void Game::handle_input() {
+void Game::process_inputs() {
 	sf::Event event;
 	while (window_->pollEvent(event)) {
 		switch (event.type) {
 		case sf::Event::Closed:
-			running_ = false;
+			is_running_ = false;
 			window_->close();
 			break;
 		}
@@ -83,6 +85,8 @@ void Game::update() {
 void Game::render() {
 	window_->clear();
 
+	const auto& arena_visual = arena_->get_visual();
+	window_->draw(arena_visual.vertices, arena_visual.texture);
 	window_->draw(player_->get_visual());
 	window_->draw(zombie_->get_visual());
 	for (auto zombie : zombies_) {

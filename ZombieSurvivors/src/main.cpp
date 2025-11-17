@@ -3,7 +3,7 @@
 
 int main() {
     auto game = new rr::Game("Zombie Survivors");
-    game->run();
+    game->loop();
     delete game;
     return 0;
 }

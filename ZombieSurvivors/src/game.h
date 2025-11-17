@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "arena.h"
 #include "zombie.h"
 #include "player.h"
 #include <SFML/Graphics.hpp>
@@ -13,12 +14,13 @@ private:
 	sf::Vector2f window_center_;
 	sf::VideoMode video_mode_;
 	sf::RenderWindow* window_;
-	bool running_ = true;
+	bool is_running_ = true;
 
 	Player* player_;
 	Zombie* zombie_;
 	std::vector<Zombie*> zombies_;
 	sf::Vector2f mouse_position_;
+	Arena* arena_;
 public:
 	/**
 	 * @brief Time between frames
@@ -27,9 +29,9 @@ public:
 public:
 	Game(const std::string& title);
 	~Game();
-	void run();
+	void loop();
 	void prepare();
-	void handle_input();
+	void process_inputs();
 	void update();
 	void render();
 };
