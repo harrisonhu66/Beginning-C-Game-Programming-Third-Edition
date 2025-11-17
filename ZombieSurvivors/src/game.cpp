@@ -34,7 +34,7 @@ Game::~Game() {
 }
 
 void Game::run() {
-    setup();
+    prepare();
 	sf::Clock clock;
     while (running_) {
         handle_input();
@@ -44,7 +44,7 @@ void Game::run() {
     }
 }
 
-void Game::setup() {
+void Game::prepare() {
 	std::println("{}, {}", window_center_.x, window_center_.y);
 	player_->position = window_center_;
 	zombie_->set_position(player_->position.x - 200, player_->position.y - 300.0f);

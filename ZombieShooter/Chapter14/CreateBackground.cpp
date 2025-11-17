@@ -1,4 +1,4 @@
-#include "ZombieArena.h"
+﻿#include "ZombieArena.h"
 int createBackground(VertexArray& rVA, IntRect arena)
 {
     // Anything we do to rVA we are really doing

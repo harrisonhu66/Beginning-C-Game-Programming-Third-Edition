@@ -28,7 +28,7 @@ public:
 	Game(const std::string& title);
 	~Game();
 	void run();
-	void setup();
+	void prepare();
 	void handle_input();
 	void update();
 	void render();
