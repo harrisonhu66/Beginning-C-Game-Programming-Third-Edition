@@ -1,6 +1,7 @@
 ﻿#include "texture_map.h"
 #include "game.h"
 #include "zombie.h"
+#include "rng.h"
 #include <cmath>
 
 namespace rr {
@@ -23,6 +24,8 @@ Zombie::Zombie(Type type) {
 		sprite_.setOrigin(75 / 2.0, 75 / 2.0f);
 		break;
 	}
+	float modifier = Rng::singleton().pick(0, 31) / 100.0f;
+	speed_ -= speed_ * modifier;
 }
 
 void Zombie::update() {
