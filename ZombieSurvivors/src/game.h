@@ -11,19 +11,15 @@ namespace rr {
 class Game {
 private:
 	// Due to deleted operator= of sf::Window, so choose the pointer type
-	sf::VideoMode video_mode_;
-	sf::Vector2f window_center_;
-	std::unique_ptr<sf::RenderWindow> window_;
+	sf::VideoMode video_mode_{};
+	sf::Vector2f window_center_{};
+	std::unique_ptr<sf::RenderWindow> window_{};
+	sf::View main_camera_{};
+	bool is_running_{};
 
-	bool is_running_;
-
-	std::unique_ptr<Player> player_;
-	std::vector<std::unique_ptr<Zombie>> zombies_;
-
-	sf::Vector2f mouse_position_;
-
-	std::unique_ptr<Arena> arena_;
-	sf::View main_camera_;
+	std::unique_ptr<Player> player_{};
+	std::vector<std::unique_ptr<Zombie>> zombies_{};
+	std::unique_ptr<Arena> arena_{};
 public:
 	/**
 	 * @brief Time between frames
@@ -32,7 +28,8 @@ public:
 public:
 	Game(const std::string& title);
 	void loop();
-	void prepare();
+private:
+	void setup();
 	void process_inputs();
 	void update();
 	void render();

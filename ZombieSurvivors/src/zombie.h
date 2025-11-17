@@ -4,13 +4,6 @@
 
 namespace rr {
 class Zombie {
-private:
-	Player* player_ = nullptr;
-	// TODO This is stupid, always need to code the stats of some actor
-	sf::Vector2f position_ = sf::Vector2f(0, 0);
-	float speed_ = 0.0f;
-	sf::Sprite sprite_ = sf::Sprite();
-
 public:
 	enum class Type {
 		crawler,
@@ -18,8 +11,19 @@ public:
 		bloater
 	};
 	constexpr static int num_types = 3;
+private:
+	const Player* player_{};
+	// TODO This is stupid, always need to code the stats of some actor
+	sf::Vector2f position_{};
+	float speed_{};
+	sf::Sprite sprite_{};
+	Type type_;
 
+public:
 	Zombie(Type type);
+
+	void awake();
+	void start(const Player* player);
 	void set_position(float x, float y) {
 		position_ = sf::Vector2f(x, y);
 	}

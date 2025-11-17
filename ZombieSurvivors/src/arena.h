@@ -13,7 +13,7 @@ private:
 		sf::Texture* texture;
 	};
 
-	Visual visual_;
+	Visual visual_ = Visual{};
 public:
 	/**
 	 * @brief region.width和region.heigth != tile_size * z (z in positive integers)会出现黑边，或者说会少一个tile

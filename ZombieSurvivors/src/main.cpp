@@ -1,9 +1,9 @@
 ﻿#include "game.h"
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 int main() {
-    auto game = new rr::Game("Zombie Survivors");
+    auto game = std::make_unique<rr::Game>("Zombie Survivors");
     game->loop();
-    delete game;
     return 0;
 }

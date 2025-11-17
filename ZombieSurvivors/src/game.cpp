@@ -8,29 +8,36 @@ Game::Game(const std::string& title) {
     video_mode_ = sf::VideoMode(1920, 1080);
 	window_center_ = sf::Vector2f(video_mode_.width / 2.0f, video_mode_.height / 2.0f);
     window_ = std::make_unique<sf::RenderWindow>(video_mode_, title);
-
-	arena_ = std::make_unique<Arena>(sf::IntRect(0, 0, video_mode_.width * 2, video_mode_.height * 2), 50);
 	main_camera_ = sf::View(sf::FloatRect(0, 0, video_mode_.width, video_mode_.height));
+	is_running_ = true;
+}
+
+void Game::setup() {
+	arena_ = std::make_unique<Arena>(sf::IntRect(0, 0, video_mode_.width * 2, video_mode_.height * 2), 50);
 
     player_ = std::make_unique<Player>();
+	player_->awake();
+	player_->start(window_.get());
+	std::println("{}, {}", window_center_.x, window_center_.y);
+	player_->position = window_center_;
 
 	constexpr int num_zombies = 500;
 	for (int i = 0; i < num_zombies; i++) {
 		auto zombie_type = static_cast<Zombie::Type>(Rng::singleton().pick(Zombie::num_types));
 		auto zombie = std::make_unique<Zombie>(static_cast<Zombie::Type>(zombie_type));
+		zombie->awake();
+		zombie->start(player_.get());
+
 		float padding = 40;
 		auto x = static_cast<int>(Rng::singleton().pick(padding, arena_->get_region().width - padding));
 		auto y = static_cast<int>(Rng::singleton().pick(padding, arena_->get_region().height - padding));
 		zombie->set_position(x, y);
-		zombie->prepare(player_.get());
 		zombies_.push_back(std::move(zombie));
 	}
-
-	is_running_ = true;
 }
 
 void Game::loop() {
-    prepare();
+    setup();
 	sf::Clock clock;
     while (is_running_) {
         process_inputs();
@@ -38,11 +45,6 @@ void Game::loop() {
         update();
         render();
     }
-}
-
-void Game::prepare() {
-	std::println("{}, {}", window_center_.x, window_center_.y);
-	player_->position = window_center_;
 }
 
 void Game::process_inputs() {
@@ -55,19 +57,11 @@ void Game::process_inputs() {
 			break;
 		}
 	}
-
-	player_->move_intent.right = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-	player_->move_intent.left = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-	player_->move_intent.up = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
-	player_->move_intent.down = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-
-	auto mouse_pixels = sf::Mouse::getPosition(*window_);
-	mouse_position_ = window_->mapPixelToCoords(mouse_pixels);
 }
 
 void Game::update() {
 	// 每次都添加update, draw很烦呐
-	player_->update(mouse_position_);
+	player_->update();
 	main_camera_.setCenter(player_->position);
 	for (auto& zombie : zombies_) {
 		zombie->update();

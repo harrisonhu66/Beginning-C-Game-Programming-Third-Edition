@@ -6,8 +6,10 @@
 
 namespace rr {
 
-Zombie::Zombie(Type type) {
-	switch (type) {
+Zombie::Zombie(Type type) : type_(type) {}
+
+void Zombie::awake() {
+	switch (type_) {
 	case Type::crawler:
 		speed_ = 20;
 		sprite_.setTexture(TextureMap::singleton()["graphics/crawler.png"]);
@@ -26,6 +28,10 @@ Zombie::Zombie(Type type) {
 	}
 	float modifier = Rng::singleton().pick(0, 31) / 100.0f;
 	speed_ -= speed_ * modifier;
+}
+
+void Zombie::start(const Player* player) {
+	player_ = player;
 }
 
 void Zombie::update() {

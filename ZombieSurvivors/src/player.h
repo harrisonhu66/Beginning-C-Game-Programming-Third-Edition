@@ -1,31 +1,25 @@
 ﻿#pragma once
 #include "texture_map.h"
-#include <SFML/System/Time.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 
 namespace rr {
-struct MoveIntent {
-	bool right = false;
-	bool left = false;
-	bool up = false;
-	bool down = false;
-};
 
 class Player {
 public:
-	sf::Vector2f position = sf::Vector2f(0.0f, 0.0f);
-	MoveIntent move_intent;
+	sf::Vector2f position{};
 private:
-	float speed_ = 200.0f;
-	sf::Sprite sprite_ = sf::Sprite(TextureMap::singleton()["graphics/player.png"]);
+	float speed_{};
+	sf::Sprite sprite_{};
+	const sf::RenderWindow* window_{};
 
 public:
-	Player();
-	void update(const sf::Vector2f& mouse_position);
-	const sf::Sprite& get_visual() const { return sprite_; }
+	void awake();
+	void start(const sf::RenderWindow* window);
+	void update();
+	const sf::Sprite& get_visual() const;
 private:
 	void handle_movement();
-	void handle_rotation(const sf::Vector2f& mouse_position);
+	void look_at(const sf::Vector2f& mouse_position);
 };
 } // End namespace rr
