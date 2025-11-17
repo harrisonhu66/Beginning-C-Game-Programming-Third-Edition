@@ -3,7 +3,7 @@
 
 namespace rr {
 	// MAYBE tile_size in screen, and texture tile_size can be distinct
-	Arena::Arena(const sf::IntRect& region, int tile_size) {
+	Arena::Arena(const sf::IntRect& region, int tile_size): region_(region), tile_size_(tile_size) {
 		visual_.vertices.setPrimitiveType(sf::Quads);
 		int num_vertices_in_quads = 4;
 		int horizontal_num_tiles = region.width / tile_size;

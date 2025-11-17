@@ -11,16 +11,19 @@ namespace rr {
 class Game {
 private:
 	// Due to deleted operator= of sf::Window, so choose the pointer type
-	sf::Vector2f window_center_;
 	sf::VideoMode video_mode_;
-	sf::RenderWindow* window_;
-	bool is_running_ = true;
+	sf::Vector2f window_center_;
+	std::unique_ptr<sf::RenderWindow> window_;
 
-	Player* player_;
-	Zombie* zombie_;
-	std::vector<Zombie*> zombies_;
+	bool is_running_;
+
+	std::unique_ptr<Player> player_;
+	std::vector<std::unique_ptr<Zombie>> zombies_;
+
 	sf::Vector2f mouse_position_;
-	Arena* arena_;
+
+	std::unique_ptr<Arena> arena_;
+	sf::View main_camera_;
 public:
 	/**
 	 * @brief Time between frames
@@ -28,7 +31,6 @@ public:
 	inline static sf::Time delta_time = sf::Time();
 public:
 	Game(const std::string& title);
-	~Game();
 	void loop();
 	void prepare();
 	void process_inputs();

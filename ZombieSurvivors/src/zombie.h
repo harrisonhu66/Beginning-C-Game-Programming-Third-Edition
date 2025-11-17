@@ -23,8 +23,8 @@ public:
 	void set_position(float x, float y) {
 		position_ = sf::Vector2f(x, y);
 	}
-	void set_chase_target(Player* player) {
-		player_ = player;
+	void prepare(Player* player) {
+		set_chase_target(player);
 	}
 
 	void update();
@@ -34,5 +34,8 @@ public:
 	}
 private:
 	void chase_target();
+	void set_chase_target(Player* player) {
+		player_ = player;
+	}
 };
 }
