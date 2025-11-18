@@ -1,5 +1,6 @@
 ﻿#include "game.h"
 #include "rng.h"
+#include "bullet_registry.h"
 #include <print>
 
 namespace rr {
@@ -13,6 +14,7 @@ Game::Game(const std::string& title) {
 }
 
 void Game::setup() {
+	std::println("Game time: {}", Game::time.asSeconds());
 	arena_ = std::make_unique<Arena>(sf::IntRect(0, 0, video_mode_.width * 2, video_mode_.height * 2), 50);
 
     player_ = std::make_unique<Player>();
@@ -42,6 +44,7 @@ void Game::loop() {
     while (is_running_) {
         process_inputs();
 		Game::delta_time = clock.restart();
+		Game::time += Game::delta_time;
         update();
         render();
     }
@@ -66,6 +69,7 @@ void Game::update() {
 	for (auto& zombie : zombies_) {
 		zombie->update();
 	}
+	BulletRegistry::singleton().update_all();
 }
 
 void Game::render() {
@@ -79,6 +83,7 @@ void Game::render() {
 	for (auto& zombie : zombies_) {
 		window_->draw(zombie->get_visual());
 	}
+	BulletRegistry::singleton().render_all(window_.get());
 
 	window_->display();
 }

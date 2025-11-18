@@ -25,6 +25,7 @@ public:
 	 * @brief Time between frames
 	 */
 	inline static sf::Time delta_time = sf::Time();
+	inline static sf::Time time{};
 public:
 	Game(const std::string& title);
 	void loop();
