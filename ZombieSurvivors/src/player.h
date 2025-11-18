@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "texture_map.h"
+#include "box_collider.h"
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -14,12 +15,13 @@ private:
 	const sf::RenderWindow* window_{};
 	float fire_rate{1.0f};
 	sf::Time last_fire_time{};
+	std::unique_ptr<BoxCollider> collider_{};
 
 public:
 	void awake();
 	void start(const sf::RenderWindow* window);
 	void update();
-	const sf::Sprite& get_visual() const;
+	void render(sf::RenderWindow* window);
 private:
 	void handle_movement();
 	void handle_fire(const sf::Vector2f& mouse_position);

@@ -23,16 +23,12 @@ void BulletRegistry::spawn(const sf::Vector2f& start_position, const sf::Vector2
 
 void BulletRegistry::update_all() {
 	for (auto& bullet : bullets_) {
-		if (bullet->is_flying()) {
-			bullet->update();
-		}
+		bullet->update();
 	}
 }
 void BulletRegistry::render_all(sf::RenderWindow* window) {
 	for (auto& bullet : bullets_) {
-		if (bullet->is_flying()) {
-			window->draw(bullet->get_visual());
-		}
+		bullet->render(window);
 	}
 }
 

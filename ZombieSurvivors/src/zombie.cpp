@@ -10,24 +10,38 @@ Zombie::Zombie(Type type) : type_(type) {}
 
 void Zombie::awake() {
 	switch (type_) {
-	case Type::crawler:
-		speed_ = 20;
-		sprite_.setTexture(TextureMap::singleton()["graphics/crawler.png"]);
-		sprite_.setOrigin(50 / 2.0f, 50 / 2.0f);
-		break;
-	case Type::chaser:
-		speed_ = 40;
-		sprite_.setTexture(TextureMap::singleton()["graphics/chaser.png"]);
-		sprite_.setOrigin(55 / 2.0f, 55 / 2.0f);
-		break;
-	case Type::bloater:
-		speed_ = 80;
-		sprite_.setTexture(TextureMap::singleton()["graphics/bloater.png"]);
-		sprite_.setOrigin(75 / 2.0, 75 / 2.0f);
-		break;
+		case Type::crawler: {
+			speed_ = 20;
+			sprite_.setTexture(TextureMap::singleton()["graphics/crawler.png"]);
+			sprite_.setOrigin(50 / 2.0f, 50 / 2.0f);
+			auto sprite_size = sprite_.getGlobalBounds().getSize();
+			auto collider_size = sf::Vector2f(sprite_size.x - 20, sprite_size.y - 20);
+			collider_ = std::make_unique<BoxCollider>(collider_size);
+			break;
+		}
+		case Type::chaser: {
+			speed_ = 40;
+			sprite_.setTexture(TextureMap::singleton()["graphics/chaser.png"]);
+			sprite_.setOrigin(55 / 2.0f, 55 / 2.0f);
+			auto sprite_size = sprite_.getGlobalBounds().getSize();
+			// TODO 发现box应该也会旋转才好, 因为sprite会旋转
+			auto collider_size = sf::Vector2f(sprite_size.x - 35, sprite_size.y - 35);
+			collider_ = std::make_unique<BoxCollider>(collider_size);
+			break;
+		}
+		case Type::bloater: {
+			speed_ = 80;
+			sprite_.setTexture(TextureMap::singleton()["graphics/bloater.png"]);
+			sprite_.setOrigin(75 / 2.0, 75 / 2.0f);
+			auto sprite_size = sprite_.getGlobalBounds().getSize();
+			auto collider_size = sf::Vector2f(sprite_size.x - 32, sprite_size.y - 32);
+			collider_ = std::make_unique<BoxCollider>(collider_size);
+			break;
+		}
 	}
 	float modifier = Rng::singleton().pick(0, 31) / 100.0f;
 	speed_ -= speed_ * modifier;
+
 }
 
 void Zombie::start(const Player* player) {
@@ -36,6 +50,11 @@ void Zombie::start(const Player* player) {
 
 void Zombie::update() {
 	chase_target();
+	collider_->update(position_);
+}
+void Zombie::render(sf::RenderWindow* window) {
+	window->draw(sprite_);
+	collider_->render(window);
 }
 
 void Zombie::chase_target() {

@@ -4,9 +4,12 @@
 namespace rr {
 
 void Bullet::awake() {
-    constexpr int texture_size = 10;
+    constexpr int texture_size = 4;
     shape_.setSize(sf::Vector2f(texture_size, texture_size));
     shape_.setOrigin(texture_size / 2.0f, texture_size / 2.0f);
+
+	auto sprite_size = shape_.getGlobalBounds().getSize();
+    collider_ = std::make_unique<BoxCollider>(sprite_size);
 }
 
 void Bullet::start(const Stats& stats) {
@@ -14,34 +17,35 @@ void Bullet::start(const Stats& stats) {
 }
 
 void Bullet::update() {
-	fly();
-}
-
-sf::FloatRect Bullet::get_rect() const {
-	// TODO 这里耦合了Sprite显示大小和碰撞盒大小，应该单独设置一个碰撞盒
-    return shape_.getGlobalBounds();
-}
-
-const sf::RectangleShape& Bullet::get_visual() const {
-    return shape_;
-}
-
-bool Bullet::is_flying() const {
-    return stats_.is_flying;
-}
-void Bullet::fly() {
-	// 如果dir是0向量，说明子弹不应该飞行了
-    if (stats_.dir == sf::Vector2f(0,0)) {
-        stats_.is_flying = false;
+    if (!stats_.is_flying) {
         return;
     }
-	stats_.position += Game::delta_time.asSeconds() * stats_.speed * stats_.dir;
+	fly();
+	// God damn, handle-written component update is stupid
+	collider_->update(stats_.position);
+}
+
+void Bullet::render(sf::RenderWindow* window) {
+    if (!stats_.is_flying) {
+        return;
+    }
+    window->draw(shape_);
+    collider_->render(window);
+}
+
+const BoxCollider& Bullet::get_collider() const {
+    return *collider_;
+}
+
+void Bullet::fly() {
+    auto velocity = stats_.speed * stats_.dir;
+	stats_.position += Game::delta_time.asSeconds() * velocity;
     shape_.setPosition(stats_.position);
-    auto pixel = stats_.window->mapCoordsToPixel(get_rect().getPosition());
+    auto pixel = stats_.window->mapCoordsToPixel(shape_.getGlobalBounds().getPosition());
 	auto window_size = stats_.window->getSize();
     auto boundary = sf::Vector2i(window_size.x, window_size.y);
 	bool out_of_bounds = pixel.x < 0 || pixel.y < 0 || pixel.x > boundary.x || pixel.y > boundary.y ;
-    stats_.is_flying = !out_of_bounds;
+    stats_.is_flying = velocity != sf::Vector2f(0, 0) && !out_of_bounds;
 }
 
 }

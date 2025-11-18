@@ -7,9 +7,14 @@ namespace rr {
 void Player::awake() {
 	speed_ = 200.0f;
 	sprite_.setTexture(TextureMap::singleton()["graphics/player.png"]);
+	auto sprite_size = sprite_.getGlobalBounds().getSize();
+	auto sprite_center = sf::Vector2f(sprite_size.x / 2.0f, sprite_size.y / 2.0f);
 	// enter the origin
-	sprite_.setOrigin(25, 25);
+	sprite_.setOrigin(sprite_center.x, sprite_center.y);
 	fire_rate = 10.0f; 
+
+	auto collider_size = sf::Vector2f(sprite_size.x - 22, sprite_size.y - 22);
+	collider_ = std::make_unique<BoxCollider>(collider_size);
 }
 
 void Player::start(const sf::RenderWindow* window) {
@@ -26,6 +31,14 @@ void Player::update() {
 
 		handle_fire(mouse_position);
 	}
+
+	collider_->update(position);
+}
+
+void Player::render(sf::RenderWindow* window) {
+	// TODO It's really annoying to handle write all the draws/updates
+	window->draw(sprite_);
+	collider_->render(window);
 }
 
 void Player::handle_fire(const sf::Vector2f& mouse_position) {
@@ -45,10 +58,6 @@ void Player::handle_fire(const sf::Vector2f& mouse_position) {
 
 void Player::fire(const sf::Vector2f& dir) {
 	BulletRegistry::singleton().spawn(position, dir, window_);
-}
-
-const sf::Sprite& Player::get_visual() const { 
-	return sprite_; 
 }
 
 void Player::handle_movement() {

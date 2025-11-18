@@ -58,6 +58,11 @@ void Game::process_inputs() {
 			is_running_ = false;
 			window_->close();
 			break;
+		case sf::Event::KeyPressed:
+			if (event.key.code == sf::Keyboard::B) {
+				Game::is_debug = !Game::is_debug;
+			}
+			break;
 		}
 	}
 }
@@ -75,15 +80,16 @@ void Game::update() {
 void Game::render() {
 	window_->clear();
 
-	const auto& arena_visual = arena_->get_visual();
-	window_->draw(arena_visual.vertices, arena_visual.texture);
+	auto window = window_.get();
+
+	arena_->render(window);
 
 	window_->setView(main_camera_);
-	window_->draw(player_->get_visual());
+	player_->render(window);
 	for (auto& zombie : zombies_) {
-		window_->draw(zombie->get_visual());
+		zombie->render(window);
 	}
-	BulletRegistry::singleton().render_all(window_.get());
+	BulletRegistry::singleton().render_all(window);
 
 	window_->display();
 }

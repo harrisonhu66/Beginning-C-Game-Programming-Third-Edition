@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "player.h"
+#include "box_collider.h"
 #include <SFML/System/Time.hpp>
 
 namespace rr {
@@ -18,6 +19,7 @@ private:
 	float speed_{};
 	sf::Sprite sprite_{};
 	Type type_;
+	std::unique_ptr<BoxCollider> collider_{};
 
 public:
 	Zombie(Type type);
@@ -32,10 +34,7 @@ public:
 	}
 
 	void update();
-
-	sf::Sprite get_visual() const {
-		return sprite_;
-	}
+	void render(sf::RenderWindow* window);
 private:
 	void chase_target();
 	void set_chase_target(Player* player) {

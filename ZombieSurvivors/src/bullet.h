@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "box_collider.h"
 #include <SFML/Graphics.hpp>
 
 namespace rr {
@@ -15,13 +16,13 @@ private:
 	Stats stats_{};
 
 	sf::RectangleShape shape_{};
+	std::unique_ptr<BoxCollider> collider_{};
 public:
 	void awake();
 	void start(const Stats& stats);
 	void update();
-	sf::FloatRect get_rect() const;
-	const sf::RectangleShape& get_visual() const;
-	bool is_flying() const;
+	void render(sf::RenderWindow* window);
+	const BoxCollider& get_collider() const;
 private:
 	void fly();
 };

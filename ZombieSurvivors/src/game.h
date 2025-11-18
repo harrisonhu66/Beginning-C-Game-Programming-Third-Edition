@@ -8,6 +8,8 @@
 #include <memory>
 
 namespace rr {
+
+
 class Game {
 private:
 	// Due to deleted operator= of sf::Window, so choose the pointer type
@@ -26,6 +28,7 @@ public:
 	 */
 	inline static sf::Time delta_time = sf::Time();
 	inline static sf::Time time{};
+	inline static bool is_debug = false;
 public:
 	Game(const std::string& title);
 	void loop();
